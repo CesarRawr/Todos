@@ -66,8 +66,9 @@ public class App {
         });
 
         // Eliminar cita
-        delete("/cita/:id", (req, res) -> {
-            return DAO.eliminarCita(req.params("id"));
+        delete("/cita/:nombre", (req, res) -> {
+            System.out.println(req.params("nombre"));
+            return DAO.eliminarCita(req.params("nombre"));
         });
     }
 

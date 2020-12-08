@@ -1,22 +1,46 @@
 window.addEventListener('load', function() {
 
 	let items = document.querySelector('.items');
+
+	cargarTarjetas();
 	
-	fetch("/cita")
-	.then(function(response) {
-		return response.json();
-	})
-	.then(function(json) {
-		
-		let tarjetas = [];
+	function cargarTarjetas() {
+		fetch("/cita")
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(json) {
+			
+			let tarjetas = [];
 
-		for(let i = 0; i < json.length; i++) {
-			console.log(json[i]);
-			tarjetas.push(tarjeta(json[i]));
-		}
+			for(let i = 0; i < json.length; i++) {
+				tarjetas.push(tarjeta(json[i]));
+			}
 
-		items.innerHTML = tarjetas.join("");
-	});
+			items.innerHTML = tarjetas.join("");
+
+			let eraseBtn = document.querySelectorAll('div.erase-btn > span');
+			eraseBtn.forEach(function(elemento) {
+				elemento.addEventListener('click', function(e) {
+					let card = (e.target.parentNode.parentNode.parentNode);
+					let nombre = card.querySelector('div.nombre > h2').textContent;
+					console.log('Ejecutando')
+					fetch(`/cita/${nombre}`, {
+						method: 'DELETE'
+					})
+					.then(function(response) {
+						console.log(response);
+						if(response.ok) {
+							cargarTarjetas();
+						}
+						else {
+							alert("Algo salio mal intentando borrar");
+						}
+					});
+				});
+			});
+		});
+	}
 
 	function tarjeta(datos) {
 		return `

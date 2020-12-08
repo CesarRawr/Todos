@@ -114,7 +114,7 @@ public class DAO {
         return resultados;
     }
 
-    public static String eliminarCita(String id){
+    public static String eliminarCita(String nombre){
         
         PreparedStatement st = null;
         Connection con = null;
@@ -124,15 +124,15 @@ public class DAO {
 
         try{
 
-            String sql = "delete from citas where id = ?";
+            String sql = "delete from citas where nombre = ?";
             st = con.prepareStatement(sql);
-            st.setString(1, id);
+            st.setString(1, nombre);
 
             if(st.executeUpdate() > 0) {
                 msj = "El usuario fue eliminado";
             }
             else {
-                msj = "No se pudo eliminado el usuario";
+                msj = "No se pudo eliminar el usuario";
             }
         }
         catch(Exception e){
