@@ -24,7 +24,9 @@ window.addEventListener('load', function() {
 				elemento.addEventListener('click', function(e) {
 					let card = (e.target.parentNode.parentNode.parentNode);
 					let nombre = card.querySelector('div.nombre > h2').textContent;
-					console.log('Ejecutando')
+					
+					e.target.parentNode.innerHTML = deleteLoader();
+
 					fetch(`/cita/${nombre}`, {
 						method: 'DELETE'
 					})
@@ -59,6 +61,12 @@ window.addEventListener('load', function() {
 					</div>
 				</div>
 			</div>
+		`;
+	}
+
+	function deleteLoader() {
+		return `
+			<div class="lds-dual-ring"></div>
 		`;
 	}
 });

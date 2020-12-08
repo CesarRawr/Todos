@@ -8,6 +8,7 @@ window.addEventListener('load', function() {
 
 		let valido = true;
 		let inputs = document.querySelectorAll(".login-field");
+		let btnContainer = document.querySelector('.btn-container');
 
 		inputs.forEach(function(input) {
 	      if(input.value === "") {
@@ -16,6 +17,8 @@ window.addEventListener('load', function() {
 	    });
 
 	    if(valido) {
+
+	    	btnContainer.innerHTML = plantillaLoader();
 
 	    	let url = "/board?" + new URLSearchParams({
 		        usuario: inputs[0].value,
@@ -28,7 +31,9 @@ window.addEventListener('load', function() {
 		       		window.location = response.url;
 		        }
 		        else {
-		        	console.log("Usuario o contraseña incorrectos");
+		        	let loader = document.querySelector('div.loader');
+		        	btnContainer.removeChild(loader);
+		        	btnContainer.append(botonEnviar);
 		        }
 		    });
 	  	} 
@@ -36,4 +41,12 @@ window.addEventListener('load', function() {
 	      console.log('Algun campo está vacio');
 	    }
 	});
+
+    function plantillaLoader() {
+		return `              
+		    <div class="loader">
+		        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+		    </div>
+        `;
+	}
 });
