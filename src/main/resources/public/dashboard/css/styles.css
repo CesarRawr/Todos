@@ -1,0 +1,87 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Arial', sans-serif;
+}
+
+div.container {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	background-color: #3498DB;
+	width: 100%;
+	min-height: 100vh;
+}
+
+header.nav {
+	display: flex;
+	justify-content: center;
+	width: 55%;
+	margin-top: 2vh;
+	border-radius: 5px;
+	background-color: #fafafa;
+}
+
+header.nav div.logo {
+	color: #9e9e9e;
+	padding: 3.5vh;
+	font-size: 18px;
+}
+
+main.items-container {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+div.items {
+	display: flex;
+	align-items: center;
+	flex-flow: column;
+	margin-top: 2.5vh; 
+	width: 50vw;
+}
+
+div.card {
+	display: flex;
+	align-items: stretch;
+	margin-bottom: 2vh;
+	width: 80%;
+	border-radius: 5px;
+	background-color: #fafafa;
+}
+
+div.info {
+	padding: .5rem 0;
+	width: 85%;
+}
+
+div.data {
+	padding: .3rem .8rem;
+	font-size: 17px;
+	color: #757575;
+}
+
+div.data h2 {
+	font-size: 16px;
+}
+
+div.erase {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 15%;
+}
+
+div.erase-btn {
+	padding: .5rem;
+	border-radius: 8px;
+	cursor: default;
+}
+
+.material-icons.md-40 { font-size: 40px; }
+.material-icons.md-light { color: #bdbdbd; }
