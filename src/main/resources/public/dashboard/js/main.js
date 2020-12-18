@@ -82,7 +82,7 @@ window.addEventListener('load', function() {
 			eraseBtn.forEach(function(elemento) {
 				elemento.addEventListener('click', function(e) {
 					let card = e.target.parentNode.parentNode.parentNode;
-					let nombre = card.querySelector('div.nombre > h2').textContent;
+					let nombre = card.querySelector('div.nombre > span').textContent;
 					
 					e.target.parentNode.innerHTML = deleteLoader();
 
