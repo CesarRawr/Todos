@@ -168,13 +168,14 @@ public class DAO {
         con = conexion.getConnection();
 
         try {
-            String sql = "update citas set fecha=?, doctor=?, pruebas=? where nombre=?";
+            String sql = "update citas set nombre=?, fecha=?, doctor=?, pruebas=? where id=?";
             
             st = con.prepareStatement(sql);
-            st.setString(1, cita.getFecha());
-            st.setString(2, cita.getDoctor());
-            st.setString(3, cita.getPruebas());
-            st.setString(4, cita.getNombre());
+            st.setString(1, cita.getNombre());
+            st.setString(2, cita.getFecha());
+            st.setString(3, cita.getDoctor());
+            st.setString(4, cita.getPruebas());
+            st.setString(5, cita.getID());
 
             if(st.executeUpdate() > 0){
                 msj = "La cita fue actualizada";
