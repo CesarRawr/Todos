@@ -55,9 +55,13 @@ div.card {
 	background-color: #fafafa;
 }
 
+div.id {
+	display: none;
+}
+
 div.info {
 	padding: .5rem 0;
-	width: 85%;
+	width: 75%;
 }
 
 div.data {
@@ -74,13 +78,24 @@ div.erase {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 15%;
+	width: 25%;
+
+	cursor: default;
 }
 
 div.erase-btn {
 	padding: .5rem;
 	border-radius: 8px;
-	cursor: default;
+}
+
+.width-50 {
+	width: 50%;
+}
+
+.flex-c {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .material-icons.md-40 { font-size: 40px; }

@@ -13,16 +13,56 @@ window.addEventListener('load', function() {
 			
 			let tarjetas = [];
 
+			// Transformacion de objeto json a tarjetas
 			for(let i = 0; i < json.length; i++) {
 				tarjetas.push(tarjeta(json[i]));
 			}
 
+			// Seteamos todas nuestras tarjetas
 			items.innerHTML = tarjetas.join("");
 
+			// boton para editar la cita
+			let editBtn = document.querySelectorAll('.edit');
+			editBtn.forEach( function(elemento) {
+				elemento.addEventListener('click', function(e) {
+
+					let card = e.target.parentNode.parentNode.parentNode;
+					
+					items.innerHTML = editarTarjeta({
+						id: card.querySelector('.id').textContent,
+						nombre: card.querySelector('.nombre').textContent,
+						fecha: card.querySelector('.fecha').textContent,
+						doctor: card.querySelector('.doctor').textContent,
+						pruebas: card.querySelector('.pruebas').textContent
+					});
+
+					let putBtn = document.querySelector('.put-btn');
+
+					putBtn.addEventListener('click', function(e) {
+
+						let data = new FormData();
+
+						data.append("id", document.querySelector('.id').textContent);
+						data.append("nombre", document.querySelector('.nombre > h2').textContent);
+						data.append("fecha", document.querySelector('').value);
+						data.append("doctor", document.querySelector('').value);
+						data.append("pruebas", document.querySelector('').value);
+
+						fetch("/cita", {
+							method: 'PUT',
+						})
+						.then()
+						.catch();
+					});
+
+				});
+			});
+
+			// Boton para eliminar cita
 			let eraseBtn = document.querySelectorAll('div.erase-btn > span');
 			eraseBtn.forEach(function(elemento) {
 				elemento.addEventListener('click', function(e) {
-					let card = (e.target.parentNode.parentNode.parentNode);
+					let card = e.target.parentNode.parentNode.parentNode;
 					let nombre = card.querySelector('div.nombre > h2').textContent;
 					
 					e.target.parentNode.innerHTML = deleteLoader();
@@ -44,9 +84,11 @@ window.addEventListener('load', function() {
 		});
 	}
 
+	// Tarjetas donde aparecen los datos
 	function tarjeta(datos) {
 		return `
 			<div class="card">
+				<div class="id">${datos.id}</div>
 				<div class="info">
 					<div class="nombre data">
 						<h2>${datos.nombre}</h2>
@@ -56,7 +98,10 @@ window.addEventListener('load', function() {
 					<div class="pruebas data">${datos.pruebas}</div>
 				</div>
 				<div class="erase">
-					<div class="erase-btn">
+					<div class="edit width-50 flex-c">
+						<span class="material-icons md-40 md-light">create</span>
+					</div>
+					<div class="erase-btn width-50 flex-c">
 						<span class="material-icons md-40 md-light">delete</span>
 					</div>
 				</div>
@@ -64,6 +109,33 @@ window.addEventListener('load', function() {
 		`;
 	}
 
+	// tarjeta para editar los datos
+	function editarTarjeta(datos) {
+		return `
+			<div class="editar">
+				<div class="informacion">
+					<div class="id">${datos.id}</div>
+					<div class="nombre data">
+						<input type="text" value="${datos.nombre}"/>
+					</div>
+					<div class="fecha data">
+						<input type="text" value="${datos.fecha}"/>
+					</div>
+					<div class="doctor data">
+						<input type="text" value="${datos.doctor}"/>
+					</div>
+					<div class="pruebas data">
+						<input type="text" value="${datos.pruebas}"/>
+					</div>
+				</div>
+				<div class="send-wraper">
+					<input type="submit" value="Enviar" class="put-btn"/>
+				</div>
+			</div>
+		`;
+	}
+
+	// Imagen de carga
 	function deleteLoader() {
 		return `
 			<div class="lds-dual-ring"></div>

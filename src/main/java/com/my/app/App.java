@@ -50,6 +50,7 @@ public class App {
 
         // Obtener citas
         get("/cita", (req, res) -> {
+
             return gson.toJson(DAO.dameCitas());
         });
 
@@ -69,6 +70,14 @@ public class App {
         delete("/cita/:nombre", (req, res) -> {
             System.out.println(req.params("nombre"));
             return DAO.eliminarCita(req.params("nombre"));
+        });
+
+        // Actualizar cita
+        put("/cita", (req, res) -> {
+            String data = req.body();
+            Cita cita = gson.fromJson(data, Cita.class);
+
+            return DAO.actualizarCita(cita);
         });
     }
 

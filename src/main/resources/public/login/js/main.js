@@ -16,6 +16,8 @@ window.addEventListener('load', function() {
 	      }
 	    });
 
+	    // Si los inputs no estan vacios se hace la peticion
+
 	    if(valido) {
 
 	    	btnContainer.innerHTML = plantillaLoader();
@@ -25,9 +27,15 @@ window.addEventListener('load', function() {
 		        password: inputs[1].value
 		    });
 
+		    /*
+ 				url = /board?usuario=unusuario+password=1234
+		    */
+
 		    fetch(url)
 		    .then(function(response) {
 		       	if(response.ok) {
+
+		       		// Redirigir pagina
 		       		window.location = response.url;
 		        }
 		        else {
@@ -38,7 +46,7 @@ window.addEventListener('load', function() {
 		    });
 	  	} 
 	    else {
-	      console.log('Algun campo está vacio');
+	      alert('Algun campo está vacio');
 	    }
 	});
 

@@ -1,37 +1,42 @@
 (function() {
 
+  //Obtener bloque del formulario
   let formulario = document.querySelector('.contactForm');
+
 
   formulario.addEventListener('submit', function(e) {
 
+    // Prevenir accion por default
     e.preventDefault();
 
     let valido = true;
-    let mensaje = document.querySelector('.validation');
     let inputs = document.querySelectorAll('.form-control');
 
     let formContainer = document.querySelector('div.form');
 
+    // Verificar que ningun input esté vacio
     inputs.forEach(function(input) {
       if(input.value === "") {
         valido = false;
       }
     });
 
-    const data = new FormData(document.querySelector('.contactForm'));
-    console.log(data)
-    
-    var object = {};
-    
-    data.forEach(function(value, key){
-        object[key] = value;
-    });
-    
-    var json = JSON.stringify(object);
-
+    // Si no existe algun input vacio se envia 
     if(valido) {
 
+      const data = new FormData(formulario);
+
       formContainer.innerHTML = plantillaLoader();
+    
+      var object = {};
+      
+      // Transformamos el objeto form data en objeto javascript
+      data.forEach(function(value, key){
+          object[key] = value;
+      });
+      
+      // Transformar objeto javascript en objeto json
+      var json = JSON.stringify(object);
 
       fetch("/cita", {
         method: 'POST',
@@ -47,18 +52,22 @@
       });
 
     } else {
-      console.log('Algun campo está vacio');
+      alert('Algun campo está vacio');
     }
   });
 
+  // plantilla de cargador 
   function plantillaLoader() {
-    return `              
+
+    // backsticks se usan para retornar plantillas 
+    return `             
       <div class="loader">
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
       </div>
     `;
   }
 
+  // plantilla de enviado
   function plantillaEnviado() {
     return ` 
       <div class="enviado">

@@ -114,7 +114,7 @@ public class DAO {
         return resultados;
     }
 
-    public static String eliminarCita(String nombre){
+    public static String eliminarCita(String nombre) {
         
         PreparedStatement st = null;
         Connection con = null;
@@ -141,6 +141,53 @@ public class DAO {
         }
         finally{
             if(st != null){
+                try {
+                    st.close();
+                } 
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                st = null;
+            }
+            try {
+                con.close();
+                System.out.println("conexion cerrada");
+            } 
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return msj;
+    }
+
+    public static String actualizarCita(Cita cita) {
+
+        PreparedStatement st = null;
+        Connection con = null;
+        String msj = "";
+        con = conexion.getConnection();
+
+        try {
+            String sql = "update citas set fecha=?, doctor=?, pruebas=? where nombre=?";
+            
+            st = con.prepareStatement(sql);
+            st.setString(1, cita.getFecha());
+            st.setString(2, cita.getDoctor());
+            st.setString(3, cita.getPruebas());
+            st.setString(4, cita.getNombre());
+
+            if(st.executeUpdate() > 0){
+                msj = "La cita fue actualizada";
+            }
+            else{
+                msj = "No se pudo actualizar la cita";
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(st != null) {
                 try {
                     st.close();
                 } 
