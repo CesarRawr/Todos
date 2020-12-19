@@ -7,6 +7,10 @@ function main() {
 		let nameInput = document.querySelector('div.info > input');
 		let descriptionArea = document.querySelector('div.info > textarea');
 
+		let postWraper = document.querySelector('.post-wraper');
+		let postCard = postWraper.querySelector('.post-card');
+
+		postWraper.innerHTML = "Enviando todo...";
 		let datos = {
 			nombre: nameInput.value,
 			descripcion: descriptionArea.value
@@ -19,6 +23,8 @@ function main() {
 		.then((response) => {
 			if(response.ok) {
 				cargarTodos();
+				postWraper.innerHTML = "";
+				postWraper.appendChild(postCard);
 			}
 		})
 		.catch((e) => {
@@ -43,6 +49,7 @@ function main() {
 				unBoton.addEventListener('click', (e) => {
 					let tarjetaTodo = e.target.parentNode.parentNode;
 					let id = tarjetaTodo.querySelector('.id').textContent;
+					todosWraper.innerHTML = "Eliminando elemento...";
 					fetch(`/todo/${ id }`, {
 						method: 'DELETE'
 					})
