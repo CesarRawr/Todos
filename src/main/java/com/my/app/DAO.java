@@ -5,7 +5,7 @@ public class DAO {
     
     private static Conexion conexion = new Conexion();
 
-    public static String crearCita(Cita cita) {
+    public static String crearTodo(Todo todo) {
 
         PreparedStatement st = null;
         Connection con = null;
@@ -13,14 +13,12 @@ public class DAO {
         con = conexion.getConnection();
 
         try {
-            String sql = "insert into citas values (?,?,?,?,?)";
+            String sql = "insert into todos values (?,?,?)";
             
             st = con.prepareStatement(sql);
-            st.setString(1, cita.getID());
-            st.setString(2, cita.getNombre());
-            st.setString(3, cita.getFecha());
-            st.setString(4, cita.getDoctor());
-            st.setString(5, cita.getPruebas());
+            st.setString(1, todo.getID());
+            st.setString(2, todo.getNombre());
+            st.setString(3, todo.getDescripcion());
 
             if(st.executeUpdate() > 0){
                 msj = "El usuario fue agregado";
@@ -53,27 +51,26 @@ public class DAO {
         return msj;
     }
 
-    public static List<Cita> dameCitas() {
+    public static List<Todo> getTodos() {
         
         Statement st = null;
         Connection con = null;
         ResultSet rs = null;
-        List<Cita> resultados = new ArrayList<Cita>();
+        List<Todo> resultados = new ArrayList<Todo>();
 
         con = conexion.getConnection();
 
         try {
-            String sql = "select * from citas";
+            String sql = "select * from todos";
             st = con.createStatement();
             rs = st.executeQuery(sql);
             while(rs.next()){
-                Cita c = new Cita();
+                
+                Todo c = new Todo();
 
                 c.setID(rs.getString("id"));
                 c.setNombre(rs.getString("nombre"));
-                c.setFecha(rs.getString("fecha"));
-                c.setDoctor(rs.getString("doctor"));
-                c.setPruebas(rs.getString("pruebas"));
+                c.setDescripcion(rs.getString("descripcion"));
 
                 resultados.add(c);
             }  
@@ -114,7 +111,7 @@ public class DAO {
         return resultados;
     }
 
-    public static String eliminarCita(String nombre) {
+    public static String eliminarTodo(String id) {
         
         PreparedStatement st = null;
         Connection con = null;
@@ -124,9 +121,9 @@ public class DAO {
 
         try{
 
-            String sql = "delete from citas where nombre = ?";
+            String sql = "delete from todos where id = ?";
             st = con.prepareStatement(sql);
-            st.setString(1, nombre);
+            st.setString(1, id);
 
             if(st.executeUpdate() > 0) {
                 msj = "El usuario fue eliminado";
@@ -160,7 +157,7 @@ public class DAO {
         return msj;
     }
 
-    public static String actualizarCita(Cita cita) {
+    public static String actualizarTodo(Todo todo) {
 
         PreparedStatement st = null;
         Connection con = null;
@@ -168,20 +165,18 @@ public class DAO {
         con = conexion.getConnection();
 
         try {
-            String sql = "update citas set nombre=?, fecha=?, doctor=?, pruebas=? where id=?";
+            String sql = "update todos set nombre=?, descripcion=? where id=?";
             
             st = con.prepareStatement(sql);
-            st.setString(1, cita.getNombre());
-            st.setString(2, cita.getFecha());
-            st.setString(3, cita.getDoctor());
-            st.setString(4, cita.getPruebas());
-            st.setString(5, cita.getID());
+            st.setString(3, todo.getID());
+            st.setString(1, todo.getNombre());
+            st.setString(2, todo.getDescripcion());
 
             if(st.executeUpdate() > 0){
-                msj = "La cita fue actualizada";
+                msj = "La todo fue actualizada";
             }
             else{
-                msj = "No se pudo actualizar la cita";
+                msj = "No se pudo actualizar la todo";
             }
         }
         catch(Exception e) {

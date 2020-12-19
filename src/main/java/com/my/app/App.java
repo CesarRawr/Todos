@@ -16,68 +16,39 @@ public class App {
 
         // Ruta de la pagina principal
         get("/", (req, res) -> {
-            res.redirect("home/index.html");
+            res.redirect("index.html");
             return null;
-        });
-
-        //Ruta del login
-        get("/login", (req, res) -> {
-            res.redirect("login/index.html");
-            return null;
-        });
-
-        // Ruta del dashboard
-        get("/board", (req, res) -> {
-
-            // Obtenemos los datos de la query
-            String usuario = req.queryParams("usuario");
-            String password = req.queryParams("password");
-
-            // Vemos si coincide con nuestro usuario
-            if(usuario.equals("unusuario") && password.equals("1234")) {
-
-                // Si coincide redirigimos
-                res.status(200);
-                res.redirect("/dashboard/index.html");
-            }
-            else {
-                System.out.println("Permiso denegado");
-                res.status(404);
-            }
-
-            return res;
         });
 
         // Obtener citas
-        get("/cita", (req, res) -> {
+        get("/todo", (req, res) -> {
 
-            return gson.toJson(DAO.dameCitas());
+            return gson.toJson(DAO.getTodos());
         });
 
         // Guardar cita en base de datos
-        post("/cita", (req, res) -> {
+        post("/todo", (req, res) -> {
 
             String data = req.body();
-            Cita cita = gson.fromJson(data, Cita.class);
+            Todo todo = gson.fromJson(data, Todo.class);
             
             String id = UUID.randomUUID().toString();
-            cita.setID(id);
+            todo.setID(id);
 
-            return DAO.crearCita(cita);
+            return DAO.crearTodo(todo);
         });
-
+        
         // Eliminar cita
-        delete("/cita/:nombre", (req, res) -> {
-            System.out.println(req.params("nombre"));
-            return DAO.eliminarCita(req.params("nombre"));
+        delete("/todo/:id", (req, res) -> {
+            return DAO.eliminarTodo(req.params("id"));
         });
 
         // Actualizar cita
-        put("/cita", (req, res) -> {
+        put("/todo", (req, res) -> {
             String data = req.body();
-            Cita cita = gson.fromJson(data, Cita.class);
+            Todo todo = gson.fromJson(data, Todo.class);
 
-            return DAO.actualizarCita(cita);
+            return DAO.actualizarTodo(todo);
         });
     }
 
@@ -89,11 +60,3 @@ public class App {
         return 7072;
     }
 }
-
-/*
-cls && mvn compile && mvn exec:java -D"exec.mainClass"="App"
-*
-
-/*
-mvn clean compile assembly:single
-*/

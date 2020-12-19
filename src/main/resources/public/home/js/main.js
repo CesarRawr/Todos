@@ -1,123 +1,135 @@
-(function ($) {
-  "use strict";
+function main() {
+	
+	cargarTodos();
 
-  // Preloader (if the #preloader div exists)
-  $(window).on('load', function () {
-    if ($('#preloader').length) {
-      $('#preloader').delay(100).fadeOut('slow', function () {
-        $(this).remove();
-      });
-    }
-  });
+	let btn = document.querySelector('.btn');
+	btn.addEventListener('click', (e) => {
+		let nameInput = document.querySelector('div.info > input');
+		let descriptionArea = document.querySelector('div.info > textarea');
 
-  // Back to top button
-  $(window).scroll(function() {
-    if ($(this).scrollTop() > 100) {
-      $('.back-to-top').fadeIn('slow');
-    } else {
-      $('.back-to-top').fadeOut('slow');
-    }
-  });
-  $('.back-to-top').click(function(){
-    $('html, body').animate({scrollTop : 0},1500, 'easeInOutExpo');
-    return false;
-  });
+		let datos = {
+			nombre: nameInput.value,
+			descripcion: descriptionArea.value
+		}
 
-  // Initiate the wowjs animation library
-  new WOW().init();
+		fetch("/todo", {
+			method: 'POST',
+			body: JSON.stringify(datos)
+		})
+		.then((response) => {
+			if(response.ok) {
+				cargarTodos();
+			}
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+	});
 
-  // Header scroll class
-  $(window).scroll(function() {
-    if ($(this).scrollTop() > 100) {
-      $('#header').addClass('header-scrolled');
-    } else {
-      $('#header').removeClass('header-scrolled');
-    }
-  });
+	function cargarTodos() {
 
-  if ($(window).scrollTop() > 100) {
-    $('#header').addClass('header-scrolled');
-  }
+		let todosWraper = document.querySelector('.todos-wraper');
 
-  // Smooth scroll for the navigation and links with .scrollto classes
-  $('.main-nav a, .mobile-nav a, .scrollto').on('click', function() {
-    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      if (target.length) {
-        var top_space = 0;
+		fetch("/todo")
+		.then((response) => {
+			return response.json();
+		})
+		.then((json) => {
+			let tarjetas = json.map((tarjeta) => plantillaTarjeta(tarjeta));
+			todosWraper.innerHTML = tarjetas.join("");
 
-        if ($('#header').length) {
-          top_space = $('#header').outerHeight();
+			let botonesBorrar = document.querySelectorAll('.borrar');
+			botonesBorrar.forEach( function(unBoton) {
+				unBoton.addEventListener('click', (e) => {
+					let tarjetaTodo = e.target.parentNode.parentNode;
+					let id = tarjetaTodo.querySelector('.id').textContent;
+					fetch(`/todo/${ id }`, {
+						method: 'DELETE'
+					})
+					.then((response) => {
+						if(response.ok) {
+							cargarTodos();
+						}
+					});
+				});
+			});
 
-          if (! $('#header').hasClass('header-scrolled')) {
-            top_space = top_space - 20;
-          }
-        }
+			let botonesEditar = document.querySelectorAll('.editar');
+			botonesEditar.forEach( function(unBoton) {
+				unBoton.addEventListener('click', (e) => {
+					let tarjetaTodo = e.target.parentNode.parentNode;
+					todosWraper.innerHTML = plantillaEditar({
+						id: tarjetaTodo.querySelector('div.id').textContent,
+						nombre: tarjetaTodo.querySelector('h1.nombre').textContent,
+						descripcion: tarjetaTodo.querySelector('div.ds').textContent
+					});
 
-        $('html, body').animate({
-          scrollTop: target.offset().top - top_space
-        }, 1500, 'easeInOutExpo');
+					let btn = document.getElementById('actualizar');
+					btn.addEventListener('click', (e) => {
 
-        if ($(this).parents('.main-nav, .mobile-nav').length) {
-          $('.main-nav .active, .mobile-nav .active').removeClass('active');
-          $(this).closest('li').addClass('active');
-        }
+						let tarjeta = e.target.parentNode.parentNode;
+						let data = {
+							id: tarjeta.querySelector('div.id').textContent,
+							nombre: tarjeta.querySelector('input.nombre').value,
+							descripcion: tarjeta.querySelector('textarea.descripcion').value
+						}
 
-        if ($('body').hasClass('mobile-nav-active')) {
-          $('body').removeClass('mobile-nav-active');
-          $('.mobile-nav-toggle i').toggleClass('fa-times fa-bars');
-          $('.mobile-nav-overly').fadeOut();
-        }
-        return false;
-      }
-    }
-  });
+						console.log(data);
 
-  // Navigation active state on scroll
-  var nav_sections = $('section');
-  var main_nav = $('.main-nav, .mobile-nav');
-  var main_nav_height = $('#header').outerHeight();
+						todosWraper.innerHTML = "Actualizando elemento...";
+						
+						fetch("/todo", {
+							method: 'PUT',
+							body: JSON.stringify(data)
+						})
+						.then((response) => {
+							if(response.ok) {
+								cargarTodos();
+							}
+						});
+					});
+				});
+			});
+		});
+	}
 
-  $(window).on('scroll', function () {
-    var cur_pos = $(this).scrollTop();
-  
-    nav_sections.each(function() {
-      var top = $(this).offset().top - main_nav_height,
-          bottom = top + $(this).outerHeight();
-  
-      if (cur_pos >= top && cur_pos <= bottom) {
-        main_nav.find('li').removeClass('active');
-        main_nav.find('a[href="#'+$(this).attr('id')+'"]').parent('li').addClass('active');
-      }
-    });
-  });
+	/*  Plantillas  */
+	function plantillaTarjeta(datos) {
+		return  `
+			<div class="data-card">
+				<div class="id">${ datos.id }</div>
+				<div class="info">
+					<h1 class="nombre center">${ datos.nombre }</h1>
+					<div class="info-container center">
+						<div class="ds width-100 size-1-5">
+							${ datos.descripcion }
+						</div>
+					</div>
+				</div>
+				<div class="btn-wraper center">
+					<div class="editar center">Editar</div>
+					<div class="borrar center">Borrar</div>
+				</div>
+			</div>
+		`;
+	}
 
-  // jQuery counterUp (used in Whu Us section)
-  $('[data-toggle="counter-up"]').counterUp({
-    delay: 10,
-    time: 1000
-  });
+	function plantillaEditar(datos) {
+		console.log(datos);
+		return  `
+			<div class="data-card">
+				<div class="info">
+					<div class="id">${ datos.id }</div>
+					<h1 class="center">Todo</h1>
+					<input type="text" name="nombre" class="nombre width-100 align-center size-1-5" placeholder="Nombre del todo" value="${ datos.nombre }">
+					<textarea class="descripcion width-100 align-center size-1-5" placeholder="Descripcion del todo">${ datos.descripcion }</textarea>
+				</div>
+				<div class="btn-wraper center">
+					<div class="btn center" id="actualizar">Actualizar</div>
+				</div>
+			</div>
+		`;
+	}
+}
 
-  // Porfolio isotope and filter
-  $(window).on('load', function () {
-    var portfolioIsotope = $('.portfolio-container').isotope({
-      itemSelector: '.portfolio-item'
-    });
-    $('#portfolio-flters li').on( 'click', function() {
-      $("#portfolio-flters li").removeClass('filter-active');
-      $(this).addClass('filter-active');
-  
-      portfolioIsotope.isotope({ filter: $(this).data('filter') });
-    });
-  });
-
-  // Testimonials carousel (uses the Owl Carousel library)
-  $(".testimonials-carousel").owlCarousel({
-    autoplay: true,
-    dots: true,
-    loop: true,
-    items: 1
-  });
-
-})(jQuery);
-
+window.addEventListener('load', main);

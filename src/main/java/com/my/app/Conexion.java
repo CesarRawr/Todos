@@ -3,10 +3,10 @@ import java.sql.SQLException;
 import java.lang.ClassNotFoundException;
 
 public class Conexion {
-    private static String url = "jdbc:mysql://db4free.net:3306/consultabdtest?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    private static String url = "jdbc:mysql://db4free.net:3306/sistemaweb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static String driverName ="com.mysql.cj.jdbc.Driver";
-    private static String user = "admnstrador";
-    private static String password ="321654987";
+    private static String user = "srgio1";
+    private static String password ="84627913";
     private static Connection conen = null;
     
     public static Connection getConnection(){
